@@ -1,0 +1,48 @@
+# .dockerignore
+# Fichiers à exclure du contexte Docker
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Maven
+target/
+.m2/
+*.jar
+*.war
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+docs/
+
+# Build artifacts
+*.log
+build/
+dist/
+
+# Environment files
+.env
+.env.local
+
+# Node (if any frontend)
+node_modules/
+npm-debug.log
+
