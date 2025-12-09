@@ -1,6 +1,7 @@
 spring:
   application:
     name: course-service
+    yarbi tsda9
 
   config:
     import: "configserver:http://localhost:8888"
