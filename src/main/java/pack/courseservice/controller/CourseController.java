@@ -4,10 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pack.courseservice.dto.CourseCreateUpdateDTO;
 import pack.courseservice.dto.CourseDTO;
 import pack.courseservice.entity.CourseStatus;
+import pack.courseservice.entity.Follow;
+import pack.courseservice.repository.FollowRepository;
 import pack.courseservice.service.CourseService;
 
 import java.util.List;
@@ -18,9 +22,11 @@ public class CourseController {
 
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
+    private final FollowRepository followRepository;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, FollowRepository followRepository) {
         this.courseService = courseService;
+        this.followRepository = followRepository;
     }
 
     @PostMapping
@@ -86,5 +92,16 @@ public class CourseController {
         log.info("Deleting course with id: {}", courseId);
         courseService.deleteCourse(courseId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/follow")
+    public Follow follow(@PathVariable String id) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT")))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        Follow f = new Follow();
+        f.setCourseId(id);
+        f.setStudentId(Long.valueOf((String) auth.getPrincipal()));
+        return followRepository.save(f);
     }
 }

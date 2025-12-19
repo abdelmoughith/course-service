@@ -15,17 +15,19 @@ import java.util.List;
 
 @Component
 public class HeaderAuthFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
             throws ServletException, IOException {
         String id = req.getHeader("X-User-Id");
         String role = req.getHeader("X-User-Role");
-        if(id!=null && role!=null){
-            var auth = new UsernamePasswordAuthenticationToken(id,null,
+
+        if (id != null && role != null) {
+            var auth = new UsernamePasswordAuthenticationToken(id, null,
                     List.of(new SimpleGrantedAuthority("ROLE_" + role)));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-        chain.doFilter(req,resp);
+        chain.doFilter(req, resp);
     }
 }
 
